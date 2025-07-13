@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Success Metrics Selection Framework</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNhh/QAJLDT0QrPdHx6otma+gA8+VKryLK7kUOiTjdDiKmh0sTVdYFVJw==" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .framework-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            color: #7f8c8d;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        
+        .step-container {
+            margin-bottom: 30px;
+        }
+        
+        .step-header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .form-select, .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-select:focus, .form-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .metric-category {
+            border: 2px solid #ecf0f1;
+            border-radius: 12px;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .category-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .category-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+        }
+        
+        .metric-item {
+            margin-bottom: 12px;
+            position: relative;
+        }
+        
+        .metric-select, .metric-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+        
+        .custom-input {
+            display: none;
+            margin-top: 8px;
+        }
+        
+        .metric-suggestion {
+            font-size: 12px;
+            color: #7f8c8d;
+            font-style: italic;
+            margin-top: 4px;
+        }
+        
+        .definition-box {
+            background: #e8f4fd;
+            border: 1px solid #3498db;
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #2c3e50;
+            display: none;
+        }
+        
+        .definition-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .suggestions-box {
+            background: #e8f4fd;
+            border: 1px solid #3498db;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        
+        .suggestions-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .suggestion-item {
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #34495e;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #219a52;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .results-container {
+            display: none;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+        
+        .results-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .metrics-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .summary-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .summary-card.business { border-left-color: #27ae60; }
+        .summary-card.technical { border-left-color: #e74c3c; }
+        .summary-card.experience { border-left-color: #f39c12; }
+        
+        .card-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .card-content {
+            font-size: 14px;
+            color: #34495e;
+            line-height: 1.4;
+        }
+        
+        .visual-summary {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 25px;
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .dashboard-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .dashboard-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 15px 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .recommendation-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .recommendation-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .recommendation-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .recommendation-list li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .recommendation-list li:before {
+            content: "💡";
+            position: absolute;
+            left: 0;
+        }
+        
+        .progress-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .progress-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .progress-bar-container {
+            background: #ecf0f1;
+            border-radius: 20px;
+            height: 30px;
+            overflow: hidden;
+            margin: 10px 0;
+            position: relative;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            border-radius: 20px;
+            background: linear-gradient(90deg, #e74c3c, #f39c12, #27ae60);
+            transition: width 0.8s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .metric-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .metric-badge {
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .badge-business { background: #27ae60; }
+        .badge-technical { background: #e74c3c; }
+        .badge-experience { background: #f39c12; }
+        .badge-learning { background: #9b59b6; }
+        
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .warning-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 8px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            border-top: 1px solid #ecf0f1;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .controls {
+                display: none;
+            }
+            .framework-container {
+                box-shadow: none;
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .metrics-grid, .metrics-summary, .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="framework-container">
+        <div class="header">
+            <div class="title">📊 AI Success Metrics Selection Framework</div>
+            <div class="subtitle">Define metrics that connect technical performance to business outcomes</div>
+        </div>
+
+        <!-- Step 1: Use Case Selection -->
+        <div class="step-container">
+            <div class="step-header">Step 1: Define Your AI Use Case Context</div>
+            
+            <div class="form-group">
+                <label class="form-label">AI Use Case Type:</label>
+                <select class="form-select" id="useCaseType" onchange="updateSuggestions()">
+                    <option value="">Select your AI use case type...</option>
+                    <option value="customer_service">Customer Service & Support</option>
+                    <option value="fraud_detection">Fraud Detection & Security</option>
+                    <option value="recommendation">Recommendation Systems</option>
+                    <option value="predictive_maintenance">Predictive Maintenance</option>
+                    <option value="demand_forecasting">Demand Forecasting</option>
+                    <option value="content_generation">Content Generation</option>
+                    <option value="image_recognition">Image/Document Recognition</option>
+                    <option value="process_automation">Process Automation</option>
+                    <option value="pricing_optimization">Pricing Optimization</option>
+                    <option value="other">Other / Custom</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Industry Context:</label>
+                <select class="form-select" id="industry">
+                    <option value="">Select your industry...</option>
+                    <option value="finance">Financial Services</option>
+                    <option value="healthcare">Healthcare</option>
+                    <option value="retail">Retail & E-commerce</option>
+                    <option value="manufacturing">Manufacturing</option>
+                    <option value="technology">Technology</option>
+                    <option value="logistics">Logistics & Supply Chain</option>
+                    <option value="media">Media & Entertainment</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Primary Business Objective:</label>
+                <input type="text" class="form-input" id="businessObjective" 
+                       placeholder="e.g., Reduce customer support response time from 4 hours to 15 minutes">
+            </div>
+        </div>
+
+        <!-- Suggestions Box -->
+        <div id="suggestionsBox" class="suggestions-box hidden">
+            <div class="suggestions-title">💡 Recommended Metrics for Your Use Case:</div>
+            <div id="suggestionsList"></div>
+        </div>
+
+        <!-- Step 2: Metrics Selection -->
+        <div class="step-container">
+            <div class="step-header">Step 2: Define Your Success Metrics</div>
+            
+            <div class="metrics-grid">
+                <!-- Business Metrics -->
+                <div class="metric-category">
+                    <div class="category-title">
+                        <span class="category-icon">💰</span>
+                        Business Impact Metrics
+                    </div>
+                    
+                    <div class="metric-item">
+                        <label class="form-label">Primary Business Metric:</label>
+                        <select class="metric-select" id="primaryBusinessSelect" onchange="toggleCustomInput('primaryBusiness'); showDefinition(this)">
+                            <option value="">Select a business metric...</option>
+                            <option value="Revenue per Customer" data-definition="Measures the average revenue generated from each customer over a specific period. Key for understanding customer value and growth potential.">Revenue per Customer</option>
+                            <option value="Customer Acquisition Cost" data-definition="Total cost of acquiring a new customer, including marketing and sales expenses. Critical for measuring efficiency of growth investments.">Customer Acquisition Cost</option>
+                            <option value="Customer Lifetime Value" data-definition="Predicted revenue a customer will generate during their entire relationship with your company. Essential for long-term profitability planning.">Customer Lifetime Value</option>
+                            <option value="Customer Satisfaction Score (CSAT)" data-definition="Measures customer satisfaction with specific interactions or overall experience. Direct indicator of service quality and retention potential.">Customer Satisfaction Score (CSAT)</option>
+                            <option value="Net Promoter Score (NPS)" data-definition="Measures customer loyalty and likelihood to recommend your company. Strong predictor of organic growth and customer retention.">Net Promoter Score (NPS)</option>
+                            <option value="Customer Retention Rate" data-definition="Percentage of customers who continue using your service over a specific period. Critical for subscription businesses and long-term profitability.">Customer Retention Rate</option>
+                            <option value="Operational Cost Reduction" data-definition="Decrease in operational expenses through process improvement or automation. Direct impact on profitability and efficiency.">Operational Cost Reduction</option>
+                            <option value="Time to Resolution" data-definition="Average time to resolve customer issues or complete processes. Key efficiency metric affecting customer satisfaction and operational costs.">Time to Resolution</option>
+                            <option value="First Call Resolution Rate" data-definition="Percentage of customer issues resolved on the first contact. Reduces costs and improves customer experience significantly.">First Call Resolution Rate</option>
+                            <option value="Processing Time Reduction" data-definition="Decrease in time required to complete key business processes. Improves efficiency, reduces costs, and enhances customer experience.">Processing Time Reduction</option>
+                            <option value="Error Rate Reduction" data-definition="Decrease in mistakes or defects in products/services. Reduces costs, improves quality, and enhances customer satisfaction.">Error Rate Reduction</option>
+                            <option value="Fraud Loss Reduction" data-definition="Decrease in financial losses due to fraudulent activities. Direct bottom-line impact and risk mitigation for financial services.">Fraud Loss Reduction</option>
+                            <option value="custom">Custom (specify below)</option>
+                        </select>
+                        <input type="text" class="metric-input custom-input" id="primaryBusiness" 
+                               placeholder="Enter custom business metric">
+                        <div class="definition-box" id="primaryBusinessDef"></div>
+                        <div class="metric-suggestion">The single most important business outcome</div>
+                    </div>
+                    
+                    <div class="metric-item">
+                        <label class="form-label">Secondary Business Metric 1:</label>
+                        <select class="metric-select" id="secondaryBusiness1Select" onchange="toggleCustomInput('secondaryBusiness1'); showDefinition(this)">
+                            <option value="">Select a business metric...</option>
+                            <option value="Cost per Transaction" data-definition="Average cost to process each transaction or interaction. Key efficiency metric for operations optimization.">Cost per Transaction</option>
+                            <option value="Employee Productivity" data-definition="Output per employee over time. Measures workforce efficiency and the impact of tools/processes on performance.">Employee Productivity</option>
+                            <option value="Quality Score" data-definition="Composite measure of product/service quality. Affects customer satisfaction, retention, and brand reputation.">Quality Score</option>
+                            <option value="Compliance Rate" data-definition="Percentage of activities meeting regulatory or policy requirements. Critical for risk management and avoiding penalties.">Compliance Rate</option>
+                            <option value="Risk Score Improvement" data-definition="Enhancement in risk assessment and mitigation. Reduces potential losses and improves decision-making quality.">Risk Score Improvement</option>
+                            <option value="User Engagement Rate" data-definition="Level of user interaction with your product/service. Strong predictor of retention and long-term value.">User Engagement Rate</option>
+                            <option value="Conversion Rate" data-definition="Percentage of prospects who become customers. Key metric for sales and marketing effectiveness.">Conversion Rate</option>
+                            <option value="Average Order Value" data-definition="Average amount spent per transaction. Key metric for revenue optimization and customer value maximization.">Average Order Value</option>
+                            <option value="Churn Rate Reduction" data-definition="Decrease in customer attrition rate. Directly impacts revenue stability and growth efficiency.">Churn Rate Reduction</option>
+                            <option value="custom">Custom (specify below)</option>
+                        </select>
+                        <input type="text" class="metric-input custom-input" id="secondaryBusiness1" 
+                               placeholder="Enter custom business metric">
+                        <div class="definition-box" id="secondaryBusiness1Def"></div>
+                    </div>
+                    
+                    <div class="metric-item">
+                        <label class="form-label">Secondary Business Metric 2:</label>
+                        <select class="metric-select" id="secondaryBusiness2Select" onchange="toggleCustomInput('secondaryBusiness2'); showDefinition(this)">
+                            <option value="">Select a business metric...</option>
+                            <option value="Time to Market" data-definition="Time from concept to product launch. Critical for competitive advantage and revenue acceleration.">Time to Market</option>
+                            <option value="Resource Utilization Rate" data-definition="Efficiency of asset and resource usage. Measures how well resources are optimized for productivity.">Resource Utilization Rate</option>
+                            <option value="Data Quality Score" data-definition="Measure of data accuracy, completeness, and reliability. Foundation for all AI-driven decisions and insights.">Data Quality Score</option>
+                            <option value="Process Efficiency" data-definition="Ratio of outputs to inputs in key processes. Measures operational optimization and waste reduction.">Process Efficiency</option>
+                            <option value="Market Share Growth" data-definition="Increase in market position relative to competitors. Key indicator of competitive strength and business expansion.">Market Share Growth</option>
+                            <option value="Innovation Rate" data-definition="Rate of new product/service development and implementation. Measures adaptability and future growth potential.">Innovation Rate</option>
+                            <option value="custom">Custom (specify below)</option>
+                        </select>
+                        <input type="text" class="metric-input custom-input" id="secondaryBusiness2" 
+                               placeholder="Enter custom business metric">
+                        <div class="definition-box" id="secondaryBusiness2Def"></div>
+                    </div>
+                </div>
+
+                <!-- Technical Metrics -->
+                <div class="metric-category">
+                    <div class="category-title">
+                        <span class="category-icon">⚙️</span>
+                        Technical Performance Metrics
+                    </div>
+                    
+                    <div class="metric-item">
+                        <label class="form-label">Leading Technical Metric 1:</label>
+                        <select class="metric-select" id="technical1Select" onchange="toggleCustomInput('technical1'); showDefinition(this)">
+                            <option value="">Select a technical metric...</option>
+                            <option value="Model Accuracy" data-definition="Percentage of correct predictions. Basic performance metric but should be balanced with business context and other quality measures.">Model Accuracy</option>
+                            <option value="Precision" data-definition="Percentage of positive predictions that are actually correct. Critical when false positives are costly (e.g., fraud detection).">Precision</option>
+                            <option value="Recall" data-definition="Percentage of actual positives correctly identified. Important when missing positive cases is costly (e.g., medical diagnosis).">Recall</option>
+                            <option value="F1-Score" data-definition="Harmonic mean of precision and recall. Provides balanced view when you need to optimize both precision and recall.">F1-Score</option>
+                            <option value="AUC-ROC" data-definition="Area Under Receiver Operating Characteristic curve. Measures model's ability to distinguish between classes across all thresholds.">AUC-ROC</option>
+                            <option value="RMSE" data-definition="Root Mean Square Error - Square root of average squared differences between predicted and actual values. Common for regression problems.">RMSE</option>
+                            <option value="Response Time" data-definition="Time from request to response. Critical for real-time applications and user experience quality.">Response Time</option>
+                            <option value="Throughput" data-definition="Number of requests processed per second. Important for understanding system capacity and scalability.">Throughput</option>
+                            <option value="Model Confidence Score" data-definition="Measure of how certain the model is about its predictions. Helps identify when human review might be needed.">Model Confidence Score</option>
+                            <option value="False Positive Rate" data-definition="Percentage of negative cases incorrectly classified as positive. Critical for understanding business impact of incorrect predictions.">False Positive Rate</option>
+                            <option value="custom">Custom (specify below)</option>
+                        </select>
+                        <input type="text" class="metric-input custom-input" id="technical1" 
+                               placeholder="Enter custom technical metric">
+                        <div class="definition-box" id="technical1Def"></div>
+                        <div class="metric-suggestion">Changes quickly, signals direction</div>
+                    </div>
+                    
+                    <div class="metric-item">
+                        <label class="form-label">Leading Technical Metric 2:</label>
+                        <select class="metric-select" id="technical2Select" onchange="toggleCustomInput('technical2'); showDefinition(this)">
+                            <option value="">Select a technical metric...</option>
+                            <option value="Data Quality Score" data-definition="Composite measure of data completeness, accuracy, and consistency. Foundation metric affecting all AI performance.">Data Quality Score</option>
+                            <option value="Model Drift Detection" data-definition="Measure of how model performance changes over time. Early warning system for when retraining is needed.">Model Drift Detection</option>
+                            <option value="System Uptime" data-definition="Percentage of time the AI system is operational and available. Critical for business continuity and user trust.">System Uptime</option>
+                            <option value="Processing Speed" data-definition="Rate at which the system processes data or requests. Affects user experience and operational efficiency.">Processing Speed</option>
+                            <option value="API Response Time" data-definition="Time for API calls to return results. Critical for system integration and user experience.">API Response Time</option>
+                            <option value="Error Rate" data-definition="Percentage of requests or operations that fail. Key indicator of system reliability and data quality issues.">Error Rate</option>
+                            <option value="Data Freshness" data-definition="How recent the training or input data is. Critical for maintaining model relevance and accuracy.">Data Freshness</option>
+                            <option value="Model Retraining Frequency" data-definition="How often models are updated with new data. Balances performance maintenance with computational costs.">Model Retraining Frequency</option>
+                            <option value="custom">Custom (specify below)</option>
+                        </select>
+                        <input type="text" class="metric-input custom-input" id="technical2" 
+                               placeholder="Enter custom technical metric">
+                        <div class="definition-box" id="technical2Def"></div>
+                    </div>
+                    
+                    <div class="metric-item">
+                        <label class="form-label">Leading Technical Metric 3:</label>
+                        <select class="metric-select" id="technical3Select" onchange="toggleCustomInput('technical3'); showDefinition(this)">
+                            <option value="">Select a technical metric...</option>
+                            <option value="Coverage Rate" data-definition="Percentage of scenarios or data points the model can handle. Indicates completeness and robustness of the solution.">Coverage Rate</option>
+                            <option value="Prediction Consistency" data-definition="Stability of predictions for similar inputs. Important for user trust and system reliability.">Prediction Consistency</option>
+                            <option value="Model Interpretability" data-definition="Measure of how easily model decisions can be explained. Important for compliance and user trust.">Model Interpretability</option>
+                            <option value="Bias/Fairness Metrics" data-definition="Measures of discriminatory patterns in model outputs. Critical for ethical AI and regulatory compliance.">Bias/Fairness Metrics</option>
+                            <option value="Calibration Score" data-definition="How well predicted probabilities match actual outcomes. Important for risk assessment and decision-making.">Calibration Score</option>
+                            <option value="Feature Coverage" data-definition="Percentage of available features actively used by the model. Indicates data utilization efficiency.">Feature Coverage</option>
+                            <option value="Training Time" data-definition="Time required to train or retrain models. Affects development speed and operational costs.">Training Time</option>
+                            <option value="Inference Time" data-definition="Time to generate one prediction. Critical for real-time applications and user experience.">Inference Time</option>
+                            <option value="custom">Custom (specify below)</option>
+                        </select>
+                        <input type="text" class="metric-input custom-input" id="technical3" 
+                               placeholder="Enter custom technical metric">
+                        <div class="definition-box" id="technical3Def"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metrics-grid" style="margin-top: 20px;">
+                <!-- User Experience Metrics -->
+                <div class="metric-category">
+                    <div class="category-title">
+                        <span class="category-icon">👥</span>
+                        User Experience Metrics
+                    </div>
+                    
+                    <div class="metric-item">
+                        <label class="form-label">Adoption Metric:</label>
+                        <select class="metric-select" id="adoptionSelect" onchange="toggleCustomInput('adoption'); showDefinition(this)">
+                            <option value="">Select an adoption metric...</option>
+                            <option value="Daily Active Users" data-definition="Number of unique users engaging with the AI system daily. Key indicator of product-market fit and user value.">Daily Active Users</option>
+                            <option value="Feature Utilization Rate" data-definition="Percentage of available AI features actually used by users. Indicates feature value and user engagement depth.">Feature Utilization Rate</option>
+                            <option value="User Retention Rate" data-definition="Percentage of users who continue using the system over time. Strong indicator of long-term value and satisfaction.">User Retention Rate</option>
+                            <option value="Task Completion Rate" data-definition="Percentage of user tasks successfully completed using the AI system. Measures effectiveness from user perspective.">Task Completion Rate</option>
+                            <option value="Time to First Value" data-definition="How quickly new users achieve their first successful outcome. Critical for reducing abandonment and increasing adoption.">Time to First Value</option>
+                            <option value="Support Ticket Reduction" data-definition="Decrease in help requests after AI implementation. Indicates system usability and self-service effectiveness.">Support Ticket Reduction</option>
+                            <option value="custom">Custom (specify below)</option>
+                        </select>
+                        <input type="text" class="metric-input custom-input" id="adoption" 
+                               placeholder="Enter custom adoption metric">
+                        <div class="definition-box" id="adoptionDef"></div>
+                        <div class="metric-suggestion">How often do users actually use the AI?</div>
+                    </div>
+                    
+                    <div class="metric-item">
+                        <label class="form-label">Trust/Override Metric:</label>
+                        <select class="metric-select" id="trustSelect" onchange="toggleCustomInput('trust'); showDefinition(this)">
+                            <option value="">Select a trust metric...</option>
+                            <option value="Recommendation Acceptance Rate" data-definition="Percentage of AI recommendations that users accept and act upon. Direct measure of user trust and AI value.">Recommendation Acceptance Rate</option>
+                            <option value="Override Frequency" data-definition="How often users manually override AI decisions. High rates may indicate trust issues or accuracy problems.">Override Frequency</option>
+                            <option value="User Confidence Score" data-definition="Self-reported confidence levels when using AI recommendations. Important for understanding user comfort and trust.">User Confidence Score</option>
+                            <option value="Appeal Rate" data-definition="Frequency of users challenging or requesting review of AI decisions. Indicates trust and satisfaction with outcomes.">Appeal Rate</option>
+                            <option value="Human Verification Requests" data-definition="How often users seek human verification or assistance. Measures confidence in AI-only decisions.">Human Verification Requests</option>
+                            <option value="Decision Reversal Rate" data-definition="Frequency of AI decisions being changed after implementation. Indicates accuracy and business impact.">Decision Reversal Rate</option>
+                            <option value="custom">Custom (specify below)</option>
+                        </select>
+                        <input type="text" class="metric-input custom-input" id="trust" 
+                               placeholder="Enter custom trust metric">
+                        <div class="definition-box" id="trustDef"></div>
+                        <div class="metric-suggestion">How often do users override AI recommendations?</div>
+                    </div>
+                </div>
+
+                <!-- Learning Metrics -->
+                <div class="metric-category">
+                    <div class="category-title">
+                        <span class="category-icon">📈</span>
+                        Learning & Improvement Metrics
+                    </div>
+                    
+                    <div class="metric-item">
+                        <label class="form-label">Model Performance Trend:</label>
+                        <select class="metric-select" id="learning1Select" onchange="toggleCustomInput('learning1'); showDefinition(this)">
+                            <option value="">Select a learning metric...</option>
+                            <option value="Accuracy Improvement Rate" data-definition="Rate at which model accuracy increases over time with new data. Indicates learning effectiveness and data quality.">Accuracy Improvement Rate</option>
+                            <option value="Learning Velocity" data-definition="Speed at which the model adapts to new patterns or data. Critical for dynamic environments and competitive advantage.">Learning Velocity</option>
+                            <option value="Performance Stability" data-definition="Consistency of model performance over time and across different data sets. Indicates robustness and reliability.">Performance Stability</option>
+                            <option value="Knowledge Retention Rate" data-definition="How well the model maintains performance on older patterns while learning new ones. Prevents catastrophic forgetting.">Knowledge Retention Rate</option>
+                            <option value="Transfer Learning Effectiveness" data-definition="Ability to apply knowledge from one domain/task to related areas. Measures adaptability and resource efficiency.">Transfer Learning Effectiveness</option>
+                            <option value="Model Convergence Speed" data-definition="How quickly the model reaches optimal performance during training. Affects development time and computational costs.">Model Convergence Speed</option>
+                            <option value="custom">Custom (specify below)</option>
+                        </select>
+                        <input type="text" class="metric-input custom-input" id="learning1" 
+                               placeholder="Enter custom learning metric">
+                        <div class="definition-box" id="learning1Def"></div>
+                        <div class="metric-suggestion">Is the AI getting smarter with more data?</div>
+                    </div>
+                    
+                    <div class="metric-item">
+                        <label class="form-label">Adaptation Metric:</label>
+                        <select class="metric-select" id="learning2Select" onchange="toggleCustomInput('learning2'); showDefinition(this)">
+                            <option value="">Select an adaptation metric...</option>
+                            <option value="Concept Drift Adaptation" data-definition="How quickly the model adjusts to changing patterns in data. Critical for maintaining accuracy in dynamic environments.">Concept Drift Adaptation</option>
+                            <option value="New Pattern Recognition" data-definition="Ability to identify and learn from previously unseen patterns. Indicates model flexibility and intelligence.">New Pattern Recognition</option>
+                            <option value="Seasonal Adaptation" data-definition="How well the model adjusts to cyclical changes in data patterns. Important for time-series and business cycle applications.">Seasonal Adaptation</option>
+                            <option value="Anomaly Learning" data-definition="Ability to learn from and adapt to unusual or exceptional cases. Critical for fraud detection and quality control.">Anomaly Learning</option>
+                            <option value="Domain Adaptation" data-definition="Effectiveness when applied to new but related domains. Measures generalizability and transfer capabilities.">Domain Adaptation</option>
+                            <option value="Real-time Adaptation" data-definition="Speed of adjustment to immediate changes in data or environment. Critical for live systems and dynamic applications.">Real-time Adaptation</option>
+                            <option value="custom">Custom (specify below)</option>
+                        </select>
+                        <input type="text" class="metric-input custom-input" id="learning2" 
+                               placeholder="Enter custom adaptation metric">
+                        <div class="definition-box" id="learning2Def"></div>
+                        <div class="metric-suggestion">How well does AI adapt to new conditions?</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Warning Box -->
+        <div class="warning-box">
+            <div class="warning-title">⚠️ Critical Question:</div>
+            <div>"If these metrics improve but business outcomes don't, what would that tell us?"</div>
+            <div style="margin-top: 8px; font-size: 14px;">Make sure your technical metrics actually predict business success, not just algorithm performance.</div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="btn btn-primary" onclick="generateFramework()">Generate Metrics Framework</button>
+            <button class="btn btn-secondary" onclick="clearForm()">Clear All</button>
+            <button class="btn btn-success" onclick="downloadPDF()">📄 Download PDF</button>
+            <button class="btn btn-danger" onclick="printReport()">🖨️ Print Report</button>
+        </div>
+
+        <!-- Results Container -->
+        <div id="resultsContainer" class="results-container">
+            <div class="results-title">🎯 Your AI Success Metrics Framework</div>
+            <div id="frameworkSummary"></div>
+        </div>
+
+        <!-- Enhanced Visual Summary Report -->
+        <div id="visualSummary" class="visual-summary hidden">
+            <div class="results-title">📊 AI Metrics Dashboard & Analytics Report</div>
+            
+            <!-- Progress Section -->
+            <div class="progress-section">
+                <div class="progress-title">🎯 Framework Completion Progress</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="overallProgressBar" style="width: 0%;">
+                        <span id="progressText">0%</span>
+                    </div>
+                </div>
+                <div class="metric-badges" id="metricBadges">
+                    <!-- Badges will be added dynamically -->
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Metrics Distribution Chart -->
+                <div class="dashboard-card">
+                    <div class="dashboard-title">
+                        🍕 Metrics Distribution
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Completion Status Chart -->
+                <div class="dashboard-card">
+                    <div class="dashboard-title">
+                        📈 Category Completion
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="completionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Statistics Panel -->
+                <div class="dashboard-card">
+                    <div class="dashboard-title">
+                        📊 Framework Statistics
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalMetrics">0</div>
+                            <div class="stat-label">Total Metrics Defined</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="completedCategories">0</div>
+                            <div class="stat-label">Categories Complete</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="frameworkScore">0</div>
+                            <div class="stat-label">Framework Score</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="readinessLevel">Beginner</div>
+                            <div class="stat-label">Readiness Level</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recommendations Panel -->
+                <div class="dashboard-card">
+                    <div class="dashboard-title">
+                        🎯 Smart Recommendations
+                    </div>
+                    <div id="recommendationsContent">
+                        <p style="color: #7f8c8d; font-style: italic;">Generate your framework to see personalized recommendations</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommendation Panel -->
+            <div class="recommendation-panel" id="mainRecommendations">
+                <div class="recommendation-title">🚀 Next Steps for AI Success</div>
+                <ul class="recommendation-list" id="recommendationsList">
+                    <li>Complete your metrics selection to get personalized recommendations</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>© 2025 <strong>Himanshu Joshi</strong> | <a href="https://github.com/HimJoe" target="_blank">GitHub: HimJoe</a></div>
+            <div style="margin-top: 5px;">AI Success Metrics Selection Framework</div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables for charts
+        let distributionChart = null;
+        let completionChart = null;
+
+        const metricSuggestions = {
+            customer_service: {
+                business: ["Customer satisfaction score", "Support cost per ticket", "First-call resolution rate"],
+                technical: ["Response time", "Query categorization accuracy", "Escalation prediction accuracy"],
+                adoption: ["Agent usage rate", "Query routing success"],
+                learning: ["Classification accuracy improvement", "Response quality over time"]
+            },
+            fraud_detection: {
+                business: ["Fraud loss reduction", "False positive cost impact", "Customer retention rate"],
+                technical: ["Precision (fraud detection rate)", "Recall (fraud catch rate)", "Processing latency"],
+                adoption: ["System alert acceptance rate", "Manual review reduction"],
+                learning: ["New fraud pattern detection", "Model adaptation speed"]
+            },
+            recommendation: {
+                business: ["Revenue per user", "Conversion rate", "Customer engagement time"],
+                technical: ["Click-through rate", "Recommendation relevance score", "Catalog coverage"],
+                adoption: ["User interaction with recommendations", "Personalization acceptance"],
+                learning: ["Recommendation accuracy improvement", "Cold start performance"]
+            },
+            predictive_maintenance: {
+                business: ["Equipment downtime reduction", "Maintenance cost savings", "Asset utilization rate"],
+                technical: ["Failure prediction accuracy", "False alarm rate", "Prediction lead time"],
+                adoption: ["Maintenance team alert response", "Preventive action compliance"],
+                learning: ["Prediction accuracy over time", "New failure mode detection"]
+            },
+            demand_forecasting: {
+                business: ["Inventory turnover rate", "Stockout reduction", "Carrying cost optimization"],
+                technical: ["Forecast accuracy (MAPE)", "Demand signal detection", "Seasonal adjustment accuracy"],
+                adoption: ["Planner forecast usage", "Inventory decision alignment"],
+                learning: ["Forecast accuracy improvement", "Market pattern adaptation"]
+            }
+        };
+
+        function showDefinition(selectElement) {
+            const selectedOption = selectElement.selectedOptions[0];
+            const definition = selectedOption ? selectedOption.getAttribute('data-definition') : '';
+            const fieldId = selectElement.id.replace('Select', '') + 'Def';
+            const defBox = document.getElementById(fieldId);
+            
+            if (definition && definition !== '') {
+                defBox.innerHTML = `<div class="definition-title">ℹ️ Definition:</div>${definition}`;
+                defBox.style.display = 'block';
+            } else {
+                defBox.style.display = 'none';
+            }
+        }
+
+        function toggleCustomInput(fieldId) {
+            const selectElement = document.getElementById(fieldId + 'Select');
+            const inputElement = document.getElementById(fieldId);
+            
+            if (selectElement && selectElement.value === 'custom') {
+                inputElement.style.display = 'block';
+                inputElement.focus();
+            } else {
+                inputElement.style.display = 'none';
+                if (selectElement && selectElement.value !== 'custom') {
+                    inputElement.value = selectElement.value;
+                }
+            }
+        }
+
+        function updateSuggestions() {
+            const useCaseType = document.getElementById('useCaseType').value;
+            const suggestionsBox = document.getElementById('suggestionsBox');
+            const suggestionsList = document.getElementById('suggestionsList');
+
+            if (useCaseType && metricSuggestions[useCaseType]) {
+                const suggestions = metricSuggestions[useCaseType];
+                suggestionsList.innerHTML = `
+                    <div class="suggestion-item"><strong>Business:</strong> ${suggestions.business.join(', ')}</div>
+                    <div class="suggestion-item"><strong>Technical:</strong> ${suggestions.technical.join(', ')}</div>
+                    <div class="suggestion-item"><strong>Adoption:</strong> ${suggestions.adoption.join(', ')}</div>
+                    <div class="suggestion-item"><strong>Learning:</strong> ${suggestions.learning.join(', ')}</div>
+                `;
+                suggestionsBox.classList.remove('hidden');
+            } else {
+                suggestionsBox.classList.add('hidden');
+            }
+        }
+
+        function getMetricValue(fieldId) {
+            const selectElement = document.getElementById(fieldId + 'Select');
+            const inputElement = document.getElementById(fieldId);
+            
+            if (selectElement && selectElement.value && selectElement.value !== 'custom') {
+                return selectElement.value;
+            } else if (inputElement && inputElement.value) {
+                return inputElement.value;
+            }
+            return 'Not defined';
+        }
+
+        function countDefinedMetrics() {
+            const business = [
+                getMetricValue('primaryBusiness'),
+                getMetricValue('secondaryBusiness1'),
+                getMetricValue('secondaryBusiness2')
+            ].filter(m => m !== 'Not defined').length;
+            
+            const technical = [
+                getMetricValue('technical1'),
+                getMetricValue('technical2'),
+                getMetricValue('technical3')
+            ].filter(m => m !== 'Not defined').length;
+            
+            const experience = [
+                getMetricValue('adoption'),
+                getMetricValue('trust')
+            ].filter(m => m !== 'Not defined').length;
+            
+            const learning = [
+                getMetricValue('learning1'),
+                getMetricValue('learning2')
+            ].filter(m => m !== 'Not defined').length;
+            
+            return { business, technical, experience, learning };
+        }
+
+        function createDistributionChart(counts) {
+            const ctx = document.getElementById('distributionChart').getContext('2d');
+            
+            if (distributionChart) {
+                distributionChart.destroy();
+            }
+            
+            distributionChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Business', 'Technical', 'User Experience', 'Learning'],
+                    datasets: [{
+                        data: [counts.business, counts.technical, counts.experience, counts.learning],
+                        backgroundColor: ['#27ae60', '#e74c3c', '#f39c12', '#9b59b6'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        function createCompletionChart(counts) {
+            const ctx = document.getElementById('completionChart').getContext('2d');
+            
+            if (completionChart) {
+                completionChart.destroy();
+            }
+            
+            const maxValues = { business: 3, technical: 3, experience: 2, learning: 2 };
+            const completionPercentages = {
+                business: Math.round((counts.business / maxValues.business) * 100),
+                technical: Math.round((counts.technical / maxValues.technical) * 100),
+                experience: Math.round((counts.experience / maxValues.experience) * 100),
+                learning: Math.round((counts.learning / maxValues.learning) * 100)
+            };
+            
+            completionChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Business', 'Technical', 'User Experience', 'Learning'],
+                    datasets: [{
+                        label: 'Completion %',
+                        data: [completionPercentages.business, completionPercentages.technical, 
+                               completionPercentages.experience, completionPercentages.learning],
+                        backgroundColor: ['#27ae60', '#e74c3c', '#f39c12', '#9b59b6'],
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function generateRecommendations(counts, totalDefined) {
+            const recommendations = [];
+            
+            if (counts.business === 0) {
+                recommendations.push("Start with defining your primary business metric - this should align with your main strategic objective");
+            }
+            
+            if (counts.technical < 2) {
+                recommendations.push("Add more technical metrics to track leading indicators of business success");
+            }
+            
+            if (counts.experience === 0) {
+                recommendations.push("Define user adoption metrics - the best AI fails if people won't use it");
+            }
+            
+            if (counts.learning === 0) {
+                recommendations.push("Include learning metrics to ensure your AI improves over time");
+            }
+            
+            if (totalDefined >= 7) {
+                recommendations.push("Excellent coverage! Consider implementing A/B testing for your metrics");
+                recommendations.push("Plan your measurement schedule: daily technical metrics, weekly user metrics, monthly business reviews");
+            }
+            
+            if (totalDefined >= 5 && totalDefined < 7) {
+                recommendations.push("Good progress! Focus on completing the remaining metric categories");
+            }
+            
+            return recommendations;
+        }
+
+        function updateVisualSummary() {
+            const counts = countDefinedMetrics();
+            const totalDefined = counts.business + counts.technical + counts.experience + counts.learning;
+            const totalPossible = 10;
+            const completeness = Math.round((totalDefined / totalPossible) * 100);
+            
+            // Update progress bar
+            const progressBar = document.getElementById('overallProgressBar');
+            const progressText = document.getElementById('progressText');
+            progressBar.style.width = completeness + '%';
+            progressText.textContent = completeness + '%';
+            
+            // Update statistics
+            document.getElementById('totalMetrics').textContent = totalDefined;
+            
+            const completedCategories = [counts.business, counts.technical, counts.experience, counts.learning]
+                .filter(count => count > 0).length;
+            document.getElementById('completedCategories').textContent = completedCategories + '/4';
+            
+            document.getElementById('frameworkScore').textContent = Math.round(completeness) + '/100';
+            
+            let readinessLevel = 'Beginner';
+            if (completeness >= 80) readinessLevel = 'Expert';
+            else if (completeness >= 60) readinessLevel = 'Advanced';
+            else if (completeness >= 30) readinessLevel = 'Intermediate';
+            document.getElementById('readinessLevel').textContent = readinessLevel;
+            
+            // Update metric badges
+            const badgesContainer = document.getElementById('metricBadges');
+            badgesContainer.innerHTML = '';
+            
+            if (counts.business > 0) {
+                badgesContainer.innerHTML += `<span class="metric-badge badge-business">Business: ${counts.business}/3</span>`;
+            }
+            if (counts.technical > 0) {
+                badgesContainer.innerHTML += `<span class="metric-badge badge-technical">Technical: ${counts.technical}/3</span>`;
+            }
+            if (counts.experience > 0) {
+                badgesContainer.innerHTML += `<span class="metric-badge badge-experience">UX: ${counts.experience}/2</span>`;
+            }
+            if (counts.learning > 0) {
+                badgesContainer.innerHTML += `<span class="metric-badge badge-learning">Learning: ${counts.learning}/2</span>`;
+            }
+            
+            // Create charts
+            createDistributionChart(counts);
+            createCompletionChart(counts);
+            
+            // Update recommendations
+            const recommendations = generateRecommendations(counts, totalDefined);
+            const recommendationsList = document.getElementById('recommendationsList');
+            const recommendationsContent = document.getElementById('recommendationsContent');
+            
+            recommendationsList.innerHTML = recommendations.map(rec => `<li>${rec}</li>`).join('');
+            recommendationsContent.innerHTML = recommendations.slice(0, 3).map(rec => `<p>💡 ${rec}</p>`).join('');
+        }
+
+        function generateFramework() {
+            const framework = {
+                context: {
+                    useCaseType: document.getElementById('useCaseType').value,
+                    industry: document.getElementById('industry').value,
+                    objective: document.getElementById('businessObjective').value
+                },
+                business: {
+                    primary: getMetricValue('primaryBusiness'),
+                    secondary1: getMetricValue('secondaryBusiness1'),
+                    secondary2: getMetricValue('secondaryBusiness2')
+                },
+                technical: {
+                    metric1: getMetricValue('technical1'),
+                    metric2: getMetricValue('technical2'),
+                    metric3: getMetricValue('technical3')
+                },
+                experience: {
+                    adoption: getMetricValue('adoption'),
+                    trust: getMetricValue('trust')
+                },
+                learning: {
+                    performance: getMetricValue('learning1'),
+                    adaptation: getMetricValue('learning2')
+                }
+            };
+
+            displayFramework(framework);
+            updateVisualSummary();
+            
+            // Show visual summary
+            document.getElementById('visualSummary').classList.remove('hidden');
+            
+            // Scroll to visual summary
+            setTimeout(() => {
+                document.getElementById('visualSummary').scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 300);
+        }
+
+        function displayFramework(framework) {
+            const summary = document.getElementById('frameworkSummary');
+            summary.innerHTML = `
+                <div class="metrics-summary">
+                    <div class="summary-card business">
+                        <div class="card-title">🎯 Business Impact</div>
+                        <div class="card-content">
+                            <strong>Primary:</strong> ${framework.business.primary}<br>
+                            <strong>Secondary:</strong> ${framework.business.secondary1}<br>
+                            <strong>Additional:</strong> ${framework.business.secondary2}
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card technical">
+                        <div class="card-title">⚙️ Technical Performance</div>
+                        <div class="card-content">
+                            <strong>Leading 1:</strong> ${framework.technical.metric1}<br>
+                            <strong>Leading 2:</strong> ${framework.technical.metric2}<br>
+                            <strong>Leading 3:</strong> ${framework.technical.metric3}
+                        </div>
+                    </div>
+                    
+                    <div class="summary-card experience">
+                        <div class="card-title">👥 User Experience</div>
+                        <div class="card-content">
+                            <strong>Adoption:</strong> ${framework.experience.adoption}<br>
+                            <strong>Trust:</strong> ${framework.experience.trust}<br>
+                            <strong>Learning:</strong> ${framework.learning.performance}<br>
+                            <strong>Adaptation:</strong> ${framework.learning.adaptation}
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; padding: 15px; background: #e8f4fd; border-radius: 8px;">
+                    <strong>Implementation Schedule:</strong><br>
+                    📊 <strong>Real-time dashboards:</strong> Technical metrics (daily monitoring)<br>
+                    📈 <strong>Weekly scorecards:</strong> User experience and learning metrics<br>
+                    💼 <strong>Monthly reviews:</strong> Business impact metrics and strategic alignment
+                </div>
+            `;
+            
+            document.getElementById('resultsContainer').style.display = 'block';
+        }
+
+        function clearForm() {
+            if (confirm('Clear all entered data? This cannot be undone.')) {
+                document.querySelectorAll('input, select').forEach(element => {
+                    element.value = '';
+                });
+                document.querySelectorAll('.custom-input').forEach(element => {
+                    element.style.display = 'none';
+                });
+                document.querySelectorAll('.definition-box').forEach(element => {
+                    element.style.display = 'none';
+                });
+                document.getElementById('suggestionsBox').classList.add('hidden');
+                document.getElementById('resultsContainer').style.display = 'none';
+                document.getElementById('visualSummary').classList.add('hidden');
+                
+                // Destroy charts
+                if (distributionChart) {
+                    distributionChart.destroy();
+                    distributionChart = null;
+                }
+                if (completionChart) {
+                    completionChart.destroy();
+                    completionChart = null;
+                }
+            }
+        }
+
+        function downloadPDF() {
+            try {
+                // Check if jsPDF is loaded
+                if (typeof window.jspdf === 'undefined') {
+                    console.log('jsPDF not available, downloading text instead');
+                    downloadTextFile();
+                    return;
+                }
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Add title
+                doc.setFontSize(20);
+                doc.setFont(undefined, 'bold');
+                doc.text('AI Success Metrics Framework', 20, 20);
+                
+                // Add generation date
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'normal');
+                doc.text(`Generated: ${new Date().toLocaleDateString()}`, 20, 35);
+                
+                let y = 50;
+                
+                // Use Case Context
+                doc.setFontSize(16);
+                doc.setFont(undefined, 'bold');
+                doc.text('USE CASE CONTEXT', 20, y);
+                y += 10;
+                
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'normal');
+                doc.text(`Type: ${document.getElementById('useCaseType').value || 'Not specified'}`, 25, y);
+                y += 8;
+                doc.text(`Industry: ${document.getElementById('industry').value || 'Not specified'}`, 25, y);
+                y += 8;
+                
+                const objective = document.getElementById('businessObjective').value || 'Not specified';
+                if (objective.length > 60) {
+                    const lines = doc.splitTextToSize(`Objective: ${objective}`, 160);
+                    doc.text(lines, 25, y);
+                    y += lines.length * 8;
+                } else {
+                    doc.text(`Objective: ${objective}`, 25, y);
+                    y += 8;
+                }
+                y += 5;
+                
+                // Business Metrics
+                doc.setFontSize(16);
+                doc.setFont(undefined, 'bold');
+                doc.text('BUSINESS METRICS', 20, y);
+                y += 10;
+                
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'normal');
+                doc.text(`Primary: ${getMetricValue('primaryBusiness')}`, 25, y);
+                y += 8;
+                doc.text(`Secondary 1: ${getMetricValue('secondaryBusiness1')}`, 25, y);
+                y += 8;
+                doc.text(`Secondary 2: ${getMetricValue('secondaryBusiness2')}`, 25, y);
+                y += 15;
+                
+                // Technical Metrics
+                doc.setFontSize(16);
+                doc.setFont(undefined, 'bold');
+                doc.text('TECHNICAL METRICS', 20, y);
+                y += 10;
+                
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'normal');
+                doc.text(`Metric 1: ${getMetricValue('technical1')}`, 25, y);
+                y += 8;
+                doc.text(`Metric 2: ${getMetricValue('technical2')}`, 25, y);
+                y += 8;
+                doc.text(`Metric 3: ${getMetricValue('technical3')}`, 25, y);
+                y += 15;
+                
+                // Check if we need a new page
+                if (y > 250) {
+                    doc.addPage();
+                    y = 20;
+                }
+                
+                // User Experience Metrics
+                doc.setFontSize(16);
+                doc.setFont(undefined, 'bold');
+                doc.text('USER EXPERIENCE METRICS', 20, y);
+                y += 10;
+                
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'normal');
+                doc.text(`Adoption: ${getMetricValue('adoption')}`, 25, y);
+                y += 8;
+                doc.text(`Trust: ${getMetricValue('trust')}`, 25, y);
+                y += 15;
+                
+                // Learning Metrics
+                doc.setFontSize(16);
+                doc.setFont(undefined, 'bold');
+                doc.text('LEARNING METRICS', 20, y);
+                y += 10;
+                
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'normal');
+                doc.text(`Performance: ${getMetricValue('learning1')}`, 25, y);
+                y += 8;
+                doc.text(`Adaptation: ${getMetricValue('learning2')}`, 25, y);
+                y += 15;
+                
+                // Implementation Schedule
+                if (y > 230) {
+                    doc.addPage();
+                    y = 20;
+                }
+                
+                doc.setFontSize(16);
+                doc.setFont(undefined, 'bold');
+                doc.text('IMPLEMENTATION SCHEDULE', 20, y);
+                y += 10;
+                
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'normal');
+                doc.text('• Daily: Technical metrics monitoring', 25, y);
+                y += 8;
+                doc.text('• Weekly: User experience metrics review', 25, y);
+                y += 8;
+                doc.text('• Monthly: Business impact assessment', 25, y);
+                y += 15;
+                
+                // Footer
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'italic');
+                doc.text('© 2025 Himanshu Joshi | GitHub: HimJoe', 25, y);
+                
+                // Save the PDF
+                doc.save('AI-Success-Metrics-Framework.pdf');
+                console.log('PDF generated successfully');
+                
+            } catch (error) {
+                console.error('PDF Error:', error);
+                alert('PDF generation failed. Downloading text file instead.');
+                downloadTextFile();
+            }
+        }
+
+        function downloadTextFile() {
+            try {
+                const content = `AI SUCCESS METRICS FRAMEWORK
+========================================
+
+Generated: ${new Date().toLocaleDateString()}
+
+USE CASE CONTEXT:
+Type: ${document.getElementById('useCaseType').value || 'Not specified'}
+Industry: ${document.getElementById('industry').value || 'Not specified'}
+Objective: ${document.getElementById('businessObjective').value || 'Not specified'}
+
+BUSINESS IMPACT METRICS:
+Primary: ${getMetricValue('primaryBusiness')}
+Secondary 1: ${getMetricValue('secondaryBusiness1')}
+Secondary 2: ${getMetricValue('secondaryBusiness2')}
+
+TECHNICAL PERFORMANCE METRICS:
+Leading 1: ${getMetricValue('technical1')}
+Leading 2: ${getMetricValue('technical2')}
+Leading 3: ${getMetricValue('technical3')}
+
+USER EXPERIENCE METRICS:
+Adoption: ${getMetricValue('adoption')}
+Trust: ${getMetricValue('trust')}
+
+LEARNING & IMPROVEMENT METRICS:
+Performance Trend: ${getMetricValue('learning1')}
+Adaptation: ${getMetricValue('learning2')}
+
+IMPLEMENTATION SCHEDULE:
+• Daily: Technical metrics monitoring
+• Weekly: User experience metrics review  
+• Monthly: Business impact assessment
+
+© 2025 Himanshu Joshi | GitHub: HimJoe
+AI Success Metrics Selection Framework`;
+
+                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'AI-Success-Metrics-Framework.txt';
+                link.style.display = 'none';
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                URL.revokeObjectURL(url);
+                console.log('Text file downloaded successfully');
+                
+            } catch (error) {
+                console.error('Download Error:', error);
+                alert('Download failed. Please try again or copy the content manually.');
+            }
+        }
+
+        function printReport() {
+            try {
+                // Create a print-friendly version
+                const printWindow = window.open('', '_blank');
+                const printContent = `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Success Metrics Framework</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        h2 { color: #34495e; margin-top: 25px; }
+        .metric-item { margin: 8px 0; }
+        .header-info { background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        @media print { body { margin: 0; } }
+    </style>
+</head>
+<body>
+    <h1>AI Success Metrics Framework</h1>
+    
+    <div class="header-info">
+        <strong>Generated:</strong> ${new Date().toLocaleDateString()}<br>
+        <strong>Use Case:</strong> ${document.getElementById('useCaseType').value || 'Not specified'}<br>
+        <strong>Industry:</strong> ${document.getElementById('industry').value || 'Not specified'}<br>
+        <strong>Objective:</strong> ${document.getElementById('businessObjective').value || 'Not specified'}
+    </div>
+    
+    <h2>Business Impact Metrics</h2>
+    <div class="metric-item"><strong>Primary:</strong> ${getMetricValue('primaryBusiness')}</div>
+    <div class="metric-item"><strong>Secondary 1:</strong> ${getMetricValue('secondaryBusiness1')}</div>
+    <div class="metric-item"><strong>Secondary 2:</strong> ${getMetricValue('secondaryBusiness2')}</div>
+    
+    <h2>Technical Performance Metrics</h2>
+    <div class="metric-item"><strong>Leading 1:</strong> ${getMetricValue('technical1')}</div>
+    <div class="metric-item"><strong>Leading 2:</strong> ${getMetricValue('technical2')}</div>
+    <div class="metric-item"><strong>Leading 3:</strong> ${getMetricValue('technical3')}</div>
+    
+    <h2>User Experience Metrics</h2>
+    <div class="metric-item"><strong>Adoption:</strong> ${getMetricValue('adoption')}</div>
+    <div class="metric-item"><strong>Trust:</strong> ${getMetricValue('trust')}</div>
+    
+    <h2>Learning & Improvement Metrics</h2>
+    <div class="metric-item"><strong>Performance Trend:</strong> ${getMetricValue('learning1')}</div>
+    <div class="metric-item"><strong>Adaptation:</strong> ${getMetricValue('learning2')}</div>
+    
+    <h2>Implementation Schedule</h2>
+    <ul>
+        <li>Daily: Technical metrics monitoring</li>
+        <li>Weekly: User experience metrics review</li>
+        <li>Monthly: Business impact assessment</li>
+    </ul>
+    
+    <div style="margin-top: 30px; font-size: 12px; color: #7f8c8d;">
+        © 2025 Himanshu Joshi | GitHub: HimJoe
+    </div>
+</body>
+</html>`;
+
+                printWindow.document.write(printContent);
+                printWindow.document.close();
+                
+                // Wait for content to load, then print
+                setTimeout(() => {
+                    printWindow.print();
+                    printWindow.close();
+                }, 500);
+                
+                console.log('Print dialog opened successfully');
+                
+            } catch (error) {
+                console.error('Print Error:', error);
+                alert('Print failed. Please try using your browser\'s print function (Ctrl+P).');
+            }
+        }
+
+        // Initialize tooltips and other interactive elements when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('AI Success Metrics Framework loaded successfully');
+        });
+    </script>
+</body>
+</html>
